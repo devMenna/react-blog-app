@@ -1,32 +1,30 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import BlogList from "./BlogList";
+import useFetch from "./useFetch";
 
 const Home = () => {
-    const [blogs, setBlogs] = useState([
-        { title: 'My new website', body: 'lorem ipsum...', author: 'mario', id: 1 },
-        { title: 'Welcome party!', body: 'lorem ipsum...', author: 'yoshi', id: 2 },
-        { title: 'Web dev top tips', body: 'lorem ipsum...', author: 'mario', id: 3 }
-    ])
+  const { error, isPending, data: blogs } = useFetch('http://localhost:8000/blogs')
 
-const [name,setName] = useState('mario')
+  // useEffect(() => {
+  //   if(!blogs) console.log('component started')
+  //   let interval ;
+  //   if(blogs){
+  //     console.log('the data is here')
+  //      interval = setInterval(() => {
+  //       console.log('hemmy')
+  //     }, 1000)
+  //   }
 
-    const handleDelete = (id) => {
-        const newBlogs = blogs.filter(blog => blog.id !== id)
-        setBlogs(newBlogs);
-    }
+  //   return () => {clearInterval(interval)}
+  // }, [ blogs ])
 
-    useEffect(() => {
-        console.log("I'm running")
-        
-    } , [name])
-
-    return ( 
-        <div className="home">
-            <BlogList blogs={blogs} title= "All blogs" handleDelete={handleDelete}></BlogList>
-            <button onClick={() => setName('luigi')}>Change name</button>
-            <p>{ name }</p>
-        </div>
-     );
+  return (
+    <div className="home">
+      { error && <div>{ error }</div> }
+      { isPending && <div>Loading...</div> }
+      { blogs && <BlogList blogs={blogs} /> }
+    </div>
+  );
 }
  
 export default Home;
